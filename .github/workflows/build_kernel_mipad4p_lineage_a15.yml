@@ -11,13 +11,13 @@ env:
   HOOK_METHOD: "normal" # manual hook method,can choice vfs and normal.
   PROFILE_NAME: "clover_lineage_a15.env" # your profile name.
   KERNELSU_SUS_PATCH: "false" # if u need manual susfs patch to kernelsu.
-  KPM_ENABLE: "true" # Only use it for SukiSU-Ultra.
+  KPM_ENABLE: "false" # Only use it for SukiSU-Ultra.
   KPM_PATCH_SOURCE: "https://raw.githubusercontent.com/PeterTea5822/NonGKI_Kernel_Patches/main/patch_linux" # patch exec file source -> raw.githubusercontent.com/Test/Test/patch .
-  GENERATE_DTB: "false" # if u kernel need DTB , but cannot auto generate it. (Only Anykernel3).
+  GENERATE_DTB: "true" # if u kernel need DTB , but cannot auto generate it. (Only Anykernel3).
   GENERATE_CHIP: "qcom" # only supported for qcom and mediatek.
-  BUILD_DEBUGGER: "false" # Output build errors.
+  BUILD_DEBUGGER: "true" # Output build errors.
   BUILD_OTHER_CONFIG: "false" # Merge config files.
-  FREE_MORE_SPACE: "false" # if u want get more space, enabled it.
+  FREE_MORE_SPACE: "true" # if u want get more space, enabled it.
 
 
 jobs:
@@ -39,7 +39,7 @@ jobs:
 
           # all of these default to true, but feel free to set to
           # "false" if necessary for your workflow
-          android: false
+          android: true
           dotnet: true
           haskell: true
           large-packages: true
@@ -236,11 +236,6 @@ jobs:
             $GITHUB_WORKSPACE/device_kernel/scripts/extract-ikconfig $GITHUB_WORKSPACE/device_kernel/Image > $GITHUB_WORKSPACE/device_kernel/arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
           fi
           echo "KERNEL_VERSION=$(head -n 3 device_kernel/Makefile | grep -E 'VERSION|PATCHLEVEL' | awk '{print $3}' | paste -sd '.')" >> $GITHUB_ENV
-
-      - name: Clean Kernel Tree (mrproper)
-        run: |
-          cd $GITHUB_WORKSPACE/device_kernel
-          make mrproper
 
       - name: Set KSU and SUSFS for DEFCONFIG
         run: |
