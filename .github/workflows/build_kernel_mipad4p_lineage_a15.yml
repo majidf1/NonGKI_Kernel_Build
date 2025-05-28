@@ -237,6 +237,11 @@ jobs:
           fi
           echo "KERNEL_VERSION=$(head -n 3 device_kernel/Makefile | grep -E 'VERSION|PATCHLEVEL' | awk '{print $3}' | paste -sd '.')" >> $GITHUB_ENV
 
+      - name: Clean Kernel Tree (mrproper)
+        run: |
+          cd $GITHUB_WORKSPACE/device_kernel
+          make mrproper
+
       - name: Set KSU and SUSFS for DEFCONFIG
         run: |
           cd $GITHUB_WORKSPACE/device_kernel
