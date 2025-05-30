@@ -3,10 +3,6 @@ on:
   workflow_call:
   workflow_dispatch:
   
-    env:
-     PACK_METHOD: "MKBOOTIMG" # Anykernel3 need SOURCE and BRANCH, MKBOOTIMG needn't it.
-     HOOK_METHOD: "vfs" # manual hook method,can choice vfs and normal.
-
 jobs:
   build:
     name: Build Kernel by ${{ github.actor }}
