@@ -2,9 +2,6 @@ name: Build Kernel Samsung S20 5G (OneUI 5.1) (Snapdragon Only) with KSU and SUS
 on:
   workflow_call:
   workflow_dispatch:
-     env:
-      PACK_METHOD: "Anykernel3" # Anykernel3 need SOURCE and BRANCH, MKBOOTIMG needn't it.
-      KERNELSU_METHOD: "manual" # shell, manual and only.
   
 jobs:
   build:
