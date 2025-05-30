@@ -5,7 +5,7 @@ on:
   
     env:
      PACK_METHOD: "Anykernel3" # Anykernel3 need SOURCE and BRANCH, MKBOOTIMG needn't it.
-     HOOK_METHOD: "normal" # manual hook method,can choice vfs and normal.
+     HOOK_METHOD: "vfs" # manual hook method,can choice vfs and normal.
 
 jobs:
   build:
