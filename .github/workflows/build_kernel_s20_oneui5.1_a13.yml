@@ -2,6 +2,11 @@ name: Build Kernel Samsung S20 5G (OneUI 5.1) (Snapdragon Only) with KSU and SUS
 on:
   workflow_call:
   workflow_dispatch:
+
+     env:
+       KERNELSU_METHOD: "only" # shell, manual and only.
+       HOOK_METHOD: "manual" # manual hook method,can choice vfs and normal.
+       KERNELSU_SUS_PATCH: "false" # if u need manual susfs patch to kernelsu.
   
 jobs:
   build:
