@@ -5,6 +5,7 @@ on:
   
     env:
       KERNELSU_METHOD: "shell" # shell, manual and only.
+      PROFILE_NAME: "x1q_oneui5.1_a13.env" # your profile name.
 
 jobs:
   build:
