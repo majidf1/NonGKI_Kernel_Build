@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 env:
   PYTHON_VERSION: "2" # Only 2(Ubuntu 22.04) or 3(Any OS Versions).
-  PACK_METHOD: "Anykernel3" # Anykernel3 need SOURCE and BRANCH, MKBOOTIMG needn't it.
+  PACK_METHOD: "MKBOOTIMG" # Anykernel3 need SOURCE and BRANCH, MKBOOTIMG needn't it.
   KERNELSU_METHOD: "manual" # shell, manual and only.
   HOOK_METHOD: "manual" # manual hook method,can choice vfs and normal.
   PROFILE_NAME: "clover_lineage_a15.env" # your profile name.
