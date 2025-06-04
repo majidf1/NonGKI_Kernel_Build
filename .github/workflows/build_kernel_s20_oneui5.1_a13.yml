@@ -3,8 +3,21 @@ on:
   workflow_call:
   workflow_dispatch: 
 
-      env:
-         PROFILE_NAME: "x1q_oneui5.1_a13.env" # your profile name.
+        env:
+          PROFILE_NAME: "x1q_oneui5.1_a13.env" # your profile name.
+          PACK_METHOD: "Anykernel3" # Anykernel3 need SOURCE and BRANCH, MKBOOTIMG needn't it.
+          KERNELSU_METHOD: "shell" # shell, manual and only.
+          PATCHES_SOURCE: "JackA1ltman/NonGKI_Kernel_Patches" # [your_name]/[your_patch] -> gooder123/NonGKI_Patcher
+          PATCHES_BRANCH: "pixel_kernel" # [your_branch] -> main
+          HOOK_METHOD: "normal" # manual hook method,can choice vfs and normal.
+          KERNELSU_SUS_PATCH: "false" # if u need manual susfs patch to kernelsu.
+          KPM_ENABLE: "false" # Only use it for SukiSU-Ultra.
+          KPM_PATCH_SOURCE: "" # patch exec file source -> raw.githubusercontent.com/Test/Test/patch .
+          GENERATE_DTB: "false" # if u kernel need DTB , but cannot auto generate it. (Only Anykernel3).
+          GENERATE_CHIP: "qcom" # only supported for qcom and mediatek.
+          BUILD_DEBUGGER: "false" # Output build errors.
+          BUILD_OTHER_CONFIG: "false" # Merge config files.
+
 
 
 
@@ -71,7 +84,7 @@ jobs:
 
           # all of these default to true, but feel free to set to
           # "false" if necessary for your workflow
-          android: false
+          android: true
           dotnet: true
           haskell: true
           large-packages: true
