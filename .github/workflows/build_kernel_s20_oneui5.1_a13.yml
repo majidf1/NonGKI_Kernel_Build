@@ -403,15 +403,10 @@ jobs:
 
       - name: Build Kernel
         run: |
-          export PATH=$GITHUB_WORKSPACE/clang-custom/bin:$PATH
+          - name: Build Kernel
+        run: |
           cd $GITHUB_WORKSPACE/device_kernel/
-          if [ -z "${{ env.GCC_32 }}" ] && [ -z "${{ env.GCC_64 }}" ]; then
-            make CC="ccache clang" O=out ARCH=arm64 ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.DEFCONFIG_NAME }}
-            make -j$(nproc --all) CC="ccache clang" O=out ARCH=arm64 ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }}
-          else
-            make CC="ccache clang" O=out ARCH=arm64 ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.GCC_64 }} ${{ env.GCC_32 }} ${{ env.DEFCONFIG_NAME }}
-            make -j$(nproc --all) CC="ccache clang" O=out ARCH=arm64 ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.GCC_64 }} ${{ env.GCC_32 }}
-          fi
+            bash rad.sh
 
       - name: Make Anykernel3 Flasher
         if: env.PACK_METHOD == 'Anykernel3'
