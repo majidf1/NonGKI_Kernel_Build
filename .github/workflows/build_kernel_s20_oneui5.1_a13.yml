@@ -6,8 +6,8 @@ on:
         env:
           PROFILE_NAME: "x1q_oneui5.1_a13.env" # your profile name.
           PACK_METHOD: "Anykernel3" # Anykernel3 need SOURCE and BRANCH, MKBOOTIMG needn't it.
-          KERNELSU_METHOD: "shell" # shell, manual and only.
-          HOOK_METHOD: "normal" # manual hook method,can choice vfs and normal.
+          KERNELSU_METHOD: "only" # shell, manual and only.
+          HOOK_METHOD: "manual" # manual hook method,can choice vfs and normal.
           KERNELSU_SUS_PATCH: "false" # if u need manual susfs patch to kernelsu.
           KPM_ENABLE: "false" # Only use it for SukiSU-Ultra.
           KPM_PATCH_SOURCE: "" # patch exec file source -> raw.githubusercontent.com/Test/Test/patch .
