@@ -14,7 +14,7 @@ jobs:
       CCACHE_NOHASHDIR: "true"
       CCACHE_HARDLINK: "true"
       
-  steps:
+    steps:
       - uses: actions/checkout@v4
       - name: Prepare Configuration
         run: |
@@ -102,7 +102,7 @@ jobs:
             sudo apt-get install zstd libc6 binutils libc6-dev-i386 gcc g++ p7zip p7zip-full -y
           fi
 
-       - name: Add KernelSU setup.sh
+      - name: Add KernelSU setup.sh
         run: |
           cd kernel-source
           curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next-susfs/kernel/setup.sh" | bash -s next-susfs
@@ -111,7 +111,7 @@ jobs:
         working-directory: kernel-source
         run: git submodule update --init --recursive --depth 0
 
-       - name: Cache Build Tools
+      - name: Cache Build Tools
         id: cache-aosp-clang
         uses: actions/cache@v4
         with:
@@ -438,21 +438,21 @@ jobs:
           key: build-kernel-${{ env.DEVICE_NAME }}${{ env.UPLOADNAME }}
           max-size: 2G
 
-      CLANG="$GITHUB_WORKSPACE/aosp-clang/clang/bin"
-          GCC64="$GITHUB_WORKSPACE/aosp-clang/aarch64-linux-android-4.9/bin"
-          PATH=$CLANG:$GCC64:$PATH
-          export PATH
-          export ARCH=arm64
-          export CLANG_TRIPLE=aarch64-linux-gnu-
-          export KERNEL_MAKE_ENV="DTC_EXT=$(pwd)/tools/dtc CONFIG_BUILD_ARM64_DT_OVERLAY=y"
-          output_dir=out
-          date=$(date +"%Y%m%d%H%M")
-          export PATH="/usr/lib/ccache:$PATH"
-          echo "date=$date" >> $GITHUB_ENV
-          echo "Building kernel with $args"  
-          make -C $(pwd) O=out $KERNEL_MAKE_ENV CC="ccache clang" LLVM=1 LLVM_IAS=1 vendor/m23xq_eur_open_defconfig && make O=out $KERNEL_MAKE_ENV CC="ccache clang" LLVM=1 LLVM_IAS=1 -j$(grep -c ^processor /proc/cpuinfo)
-          $GITHUB_WORKSPACE/kernel-source//tools/mkdtimg create $GITHUB_WORKSPACE/kernel-source/out/arch/arm64/boot/dtbo.img --page_size=4096 $(find out/arch/arm64/boot/dts/samsung/m23/m23xq/ -name *.dtbo)
-         fi
+            CLANG="$GITHUB_WORKSPACE/aosp-clang/clang/bin"
+            GCC64="$GITHUB_WORKSPACE/aosp-clang/aarch64-linux-android-4.9/bin"
+            PATH=$CLANG:$GCC64:$PATH
+            export PATH
+            export ARCH=arm64
+            export CLANG_TRIPLE=aarch64-linux-gnu-
+            export KERNEL_MAKE_ENV="DTC_EXT=$(pwd)/tools/dtc CONFIG_BUILD_ARM64_DT_OVERLAY=y"
+            output_dir=out
+            date=$(date +"%Y%m%d%H%M")
+            export PATH="/usr/lib/ccache:$PATH"
+            echo "date=$date" >> $GITHUB_ENV
+            echo "Building kernel with $args"  
+            make -C $(pwd) O=out $KERNEL_MAKE_ENV CC="ccache clang" LLVM=1 LLVM_IAS=1 vendor/m23xq_eur_open_defconfig && make O=out $KERNEL_MAKE_ENV CC="ccache clang" LLVM=1 LLVM_IAS=1 -j$(grep -c ^processor /proc/cpuinfo)
+            $GITHUB_WORKSPACE/kernel-source//tools/mkdtimg create $GITHUB_WORKSPACE/kernel-source/out/arch/arm64/boot/dtbo.img --page_size=4096 $(find out/arch/arm64/boot/dts/samsung/m23/m23xq/ -name *.dtbo)
+           fi
 
       - name: Make Anykernel3 Flasher
         if: env.PACK_METHOD == 'Anykernel3'
