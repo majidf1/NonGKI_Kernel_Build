@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Prepare Configuration
         run: |
-          CONFIG_ENV=$(grep -w "CONFIG_ENV" Profiles/instantnoodle_nameless_a15.env | head -n 1 | cut -d "=" -f 2)
+          CONFIG_ENV=$(grep -w "CONFIG_ENV" Profiles/"x1q_oneui5.1_a13.env" | head -n 1 | cut -d "=" -f 2)
           CONFIG_LIST=(
               DEVICE_NAME
               DEVICE_CODENAME
@@ -101,11 +101,28 @@ jobs:
             sudo apt-get install zstd libc6 binutils libc6-dev-i386 gcc g++ p7zip p7zip-full -y
           fi
 
-      - name: Install GNU GCC
+       - name: Add KernelSU setup.sh
         run: |
-          sudo apt-get install binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi -y
-          echo "GCC_64=CROSS_COMPILE=aarch64-linux-gnu-" >> $GITHUB_ENV
-          echo "GCC_32=CROSS_COMPILE_ARM32=arm-linux-gnueabi-" >> $GITHUB_ENV
+          cd kernel-source
+          curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next-susfs/kernel/setup.sh" | bash -s next-susfs
+
+      - name: Setup submodules
+        working-directory: kernel-source
+        run: git submodule update --init --recursive --depth 0
+
+       - name: Cache Build Tools
+        id: cache-aosp-clang
+        uses: actions/cache@v4
+        with:
+          path: aosp-clang
+          key: aosp-clang-${{ runner.os }}-${{ github.ref }}-${{ matrix.device }}
+        
+      - name: Download Build Tools
+        if: steps.cache-aosp-clang.outputs.cache-hit != 'true'
+        run: |
+          git clone https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 --depth=1 --single-branch --no-tags -b master aosp-clang/clang
+          git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 -b android-14.0.0_r0.47 --depth=1 --single-branch --no-tags aosp-clang/aarch64-linux-android-4.9
+          
 
       - name: Set Compile Environment
         run: |
@@ -420,17 +437,21 @@ jobs:
           key: build-kernel-${{ env.DEVICE_NAME }}${{ env.UPLOADNAME }}
           max-size: 2G
 
-      - name: Build Kernel
-        run: |
-          export PATH=$GITHUB_WORKSPACE/clang-custom/bin:$PATH
-          cd $GITHUB_WORKSPACE/device_kernel/
-          if [ -z "${{ env.GCC_32 }}" ] && [ -z "${{ env.GCC_64 }}" ]; then
-            make CC="ccache clang" O=out ARCH=arm64 ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.DEFCONFIG_NAME }}
-            make -j$(nproc --all) CC="ccache clang" O=out ARCH=arm64 ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }}
-          else
-            make CC="ccache clang" O=out ARCH=arm64 ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.GCC_64 }} ${{ env.GCC_32 }} ${{ env.DEFCONFIG_NAME }}
-            make -j$(nproc --all) CC="ccache clang" O=out ARCH=arm64 ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.GCC_64 }} ${{ env.GCC_32 }}
-          fi
+      CLANG="$GITHUB_WORKSPACE/aosp-clang/clang/bin"
+          GCC64="$GITHUB_WORKSPACE/aosp-clang/aarch64-linux-android-4.9/bin"
+          PATH=$CLANG:$GCC64:$PATH
+          export PATH
+          export ARCH=arm64
+          export CLANG_TRIPLE=aarch64-linux-gnu-
+          export KERNEL_MAKE_ENV="DTC_EXT=$(pwd)/tools/dtc CONFIG_BUILD_ARM64_DT_OVERLAY=y"
+          output_dir=out
+          date=$(date +"%Y%m%d%H%M")
+          export PATH="/usr/lib/ccache:$PATH"
+          echo "date=$date" >> $GITHUB_ENV
+          echo "Building kernel with $args"  
+          make -C $(pwd) O=out $KERNEL_MAKE_ENV CC="ccache clang" LLVM=1 LLVM_IAS=1 vendor/m23xq_eur_open_defconfig && make O=out $KERNEL_MAKE_ENV CC="ccache clang" LLVM=1 LLVM_IAS=1 -j$(grep -c ^processor /proc/cpuinfo)
+          $GITHUB_WORKSPACE/kernel-source//tools/mkdtimg create $GITHUB_WORKSPACE/kernel-source/out/arch/arm64/boot/dtbo.img --page_size=4096 $(find out/arch/arm64/boot/dts/samsung/m23/m23xq/ -name *.dtbo)
+         fi
 
       - name: Make Anykernel3 Flasher
         if: env.PACK_METHOD == 'Anykernel3'
