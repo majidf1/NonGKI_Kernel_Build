@@ -27,8 +27,9 @@ jobs:
       - name: Setup kernel source
         uses: actions/checkout@v4
         with:
-          ref: https://github.com/mads2570/a42xq-kernelSu.git -b master
-          path: kernel-source
+         repository: mads2570/a42xq-kernelSu
+         ref: master
+         path: kernel-source
 
       - name: Add KernelSU setup.sh
         run: |
