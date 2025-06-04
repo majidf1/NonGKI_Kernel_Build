@@ -403,8 +403,6 @@ jobs:
 
       - name: Build Kernel
         run: |
-          - name: Build Kernel
-        run: |
           cd $GITHUB_WORKSPACE/device_kernel/
             bash rad.sh
 
