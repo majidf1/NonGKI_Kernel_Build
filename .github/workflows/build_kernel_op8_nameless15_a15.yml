@@ -14,51 +14,7 @@ jobs:
       CCACHE_NOHASHDIR: "true"
       CCACHE_HARDLINK: "true"
       
-    steps:
-      - uses: actions/checkout@v4
-      - name: Prepare Configuration
-        run: |
-          CONFIG_ENV=$(grep -w "CONFIG_ENV" Profiles/"x1q_oneui5.1_a13.env" | head -n 1 | cut -d "=" -f 2)
-          CONFIG_LIST=(
-              DEVICE_NAME
-              DEVICE_CODENAME
-              CUSTOM_CMDS
-              EXTRA_CMDS
-              KERNEL_SOURCE
-              KERNEL_BRANCH
-              CLANG_SOURCE
-              CLANG_BRANCH
-              GCC_64_SOURCE
-              GCC_64_BRANCH
-              GCC_32_SOURCE
-              GCC_32_BRANCH
-              DEFCONFIG_SOURCE
-              DEFCONFIG_NAME
-              DEFCONFIG_ORIGIN_DEFCONFIG
-              KERNELSU_SOURCE
-              KERNELSU_BRANCH
-              KERNELSU_NAME
-              SUSFS_ENABLE
-              SUSFS_FIXED
-              AK3_SOURCE
-              AK3_BRANCH
-              BOOT_SOURCE
-              LXC_ENABLE
-              ROM_TEXT
-
-          )
-
-          for CONFIG in "${CONFIG_LIST[@]}"; do
-              if [[ "$CONFIG" == "EXTRA_CMDS" || "$CONFIG" == "CUSTOM_CMDS" ]]; then
-                  echo "$CONFIG=$(grep -w "$CONFIG" "$CONFIG_ENV" | head -n 1 | cut -d ":" -f 2)" >> $GITHUB_ENV
-              else
-                  echo "$CONFIG=$(grep -w "$CONFIG" "$CONFIG_ENV" | head -n 1 | cut -d "=" -f 2)" >> $GITHUB_ENV
-              fi
-          done
-
-          # Move patch folder to tmp
-          mv $GITHUB_WORKSPACE/Patches /tmp/
-
+  
       - name: Free Disk Space (Ubuntu)
         if: env.LXC_ENABLE == 'true'
         uses: jlumbroso/free-disk-space@main
