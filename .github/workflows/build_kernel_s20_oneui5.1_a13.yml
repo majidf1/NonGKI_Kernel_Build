@@ -1,22 +1,7 @@
 name: Build Kernel Samsung S20 5G (OneUI 5.1) (Snapdragon Only) with KSU and SUSFS
 on:
   workflow_call:
-  workflow_dispatch: 
-
-        env:
-          PROFILE_NAME: "x1q_oneui5.1_a13.env" # your profile name.
-          PYTHON_VERSION: "2" # Only 2(Ubuntu 22.04) or 3(Any OS Versions).
-          PACK_METHOD: "Anykernel3" # Anykernel3 need SOURCE and BRANCH, MKBOOTIMG needn't it.
-          KERNELSU_METHOD: "shell" # shell, manual and only.
-          HOOK_METHOD: "normal" # manual hook method,can choice vfs and normal.
-          KERNELSU_SUS_PATCH: "false" # if u need manual susfs patch to kernelsu.
-          KPM_ENABLE: "false" # Only use it for SukiSU-Ultra.
-          KPM_PATCH_SOURCE: "" # patch exec file source -> raw.githubusercontent.com/Test/Test/patch .
-          GENERATE_DTB: "true" # if u kernel need DTB , but cannot auto generate it. (Only Anykernel3).
-          GENERATE_CHIP: "qcom" # only supported for qcom and mediatek.
-          BUILD_DEBUGGER: "false" # Output build errors.
-          BUILD_OTHER_CONFIG: "false" # Merge config files.
-
+  workflow_dispatch:
 
 jobs:
   build:
@@ -80,7 +65,7 @@ jobs:
 
           # all of these default to true, but feel free to set to
           # "false" if necessary for your workflow
-          android: true
+          android: false
           dotnet: true
           haskell: true
           large-packages: true
@@ -106,11 +91,11 @@ jobs:
           sudo apt-get update
 
           if [ $UBUNTU_VERSION == "22.04" ]; then
-            sudo apt-get install git ccache automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python2 dos2unix libncurses5
+            sudo apt-get install git ccache automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python2 python3 dos2unix libncurses5
             sudo apt-get install p7zip p7zip-full -y
             sudo ls -lah /usr/bin/ | grep "python"
           else
-            sudo apt-get install git ccache automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler dos2unix libncurses5
+            sudo apt-get install git ccache automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python3 dos2unix libncurses5
             sudo apt-get install zstd libc6 binutils libc6-dev-i386 gcc g++ p7zip p7zip-full -y
             sudo ls -lah /usr/bin/ | grep "python"
           fi
@@ -397,18 +382,18 @@ jobs:
           key: build-kernel-${{ env.DEVICE_NAME }}${{ env.UPLOADNAME }}
           max-size: 2G
 
-     - name: Build Kernel
-       run: |
-           export PATH=$GITHUB_WORKSPACE/clang-custom/bin:$PATH
-            cd $GITHUB_WORKSPACE/device_kernel/
-             if [ -z "${{ env.GCC_32 }}" ] && [ -z "${{ env.GCC_64 }}" ]; then
+      - name: Build Kernel
+        run: |
+          export PATH=$GITHUB_WORKSPACE/clang-custom/bin:$PATH
+          cd $GITHUB_WORKSPACE/device_kernel/
+          if [ -z "${{ env.GCC_32 }}" ] && [ -z "${{ env.GCC_64 }}" ]; then
             make CC="ccache clang" O=out ARCH=arm64 ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.DEFCONFIG_NAME }}
             make -j$(nproc --all) CC="ccache clang" O=out ARCH=arm64 ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }}
-           else
+          else
             make CC="ccache clang" O=out ARCH=arm64 ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.GCC_64 }} ${{ env.GCC_32 }} ${{ env.DEFCONFIG_NAME }}
             make -j$(nproc --all) CC="ccache clang" O=out ARCH=arm64 ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.GCC_64 }} ${{ env.GCC_32 }}
-           fi
-           
+          fi
+
       - name: Make Anykernel3 Flasher
         if: env.PACK_METHOD == 'Anykernel3'
         run: |
