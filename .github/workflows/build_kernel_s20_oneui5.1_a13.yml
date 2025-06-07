@@ -406,7 +406,7 @@ jobs:
           export PATH=$GITHUB_WORKSPACE/clang-custom/bin:$PATH
             cd $GITHUB_WORKSPACE/device_kernel/
            export ARCH=arm64
-           export CLANG_TRIPLE=aarch64-linux-gnu-
+           export CLANG_TRIPLE=aarch64-linux-gnu- vendor/a42xq_eur_open_defconfig
            export KERNEL_MAKE_ENV="DTC_EXT=$(pwd)/tools/dtc CONFIG_BUILD_ARM64_DT_OVERLAY=y"
            output_dir=out
            date=$(date +"%Y%m%d%H%M")
