@@ -403,10 +403,8 @@ jobs:
       - name: Build Kernel
         working-directory: kernel-source
         run: |
-           CLANG="$GITHUB_WORKSPACE/aosp-clang/clang/bin"
-           GCC64="$GITHUB_WORKSPACE/aosp-clang/aarch64-linux-android-4.9/bin"
-           PATH=$CLANG:$GCC64:$PATH
-           export PATH
+          export PATH=$GITHUB_WORKSPACE/clang-custom/bin:$PATH
+            cd $GITHUB_WORKSPACE/device_kernel/
            export ARCH=arm64
            export CLANG_TRIPLE=aarch64-linux-gnu-
            export KERNEL_MAKE_ENV="DTC_EXT=$(pwd)/tools/dtc CONFIG_BUILD_ARM64_DT_OVERLAY=y"
