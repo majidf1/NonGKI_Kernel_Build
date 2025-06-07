@@ -401,8 +401,8 @@ jobs:
           max-size: 2G
 
       - name: Build Kernel
-         working-directory: kernel-source
-         run: |
+        working-directory: kernel-source
+        run: |
            CLANG="$GITHUB_WORKSPACE/aosp-clang/clang/bin"
            GCC64="$GITHUB_WORKSPACE/aosp-clang/aarch64-linux-android-4.9/bin"
            PATH=$CLANG:$GCC64:$PATH
