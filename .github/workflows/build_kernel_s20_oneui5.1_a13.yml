@@ -18,9 +18,6 @@ on:
           BUILD_OTHER_CONFIG: "false" # Merge config files.
 
 
-
-
-
 jobs:
   build:
     name: Build Kernel by ${{ github.actor }}
