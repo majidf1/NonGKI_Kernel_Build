@@ -84,8 +84,7 @@ jobs:
 
           pacman -Syyu --noconfirm
           pacman -S git base-devel systemd wget rustup curl patch ccache automake flex lzop bison gperf zip curl bzip2 squashfs-tools pngcrush schedtool make optipng maven pwgen minicom bc unzip 7zip zstd binutils gcc wget which --noconfirm
-          pacman -S python2-numpy
-
+          docker pull nfnty/arch-python2
           # Update Rust Toolchain
           rustup default stable
 
