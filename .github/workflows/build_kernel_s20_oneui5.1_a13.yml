@@ -5,6 +5,7 @@ on:
   
      env: 
        REKERNEL_ENABLE: "true" # if u need Re:Kernel.
+       PACK_METHOD: "Anykernel3" # Anykernel3 need SOURCE and BRANCH, MKBOOTIMG needn't it.
 
 
 jobs:
